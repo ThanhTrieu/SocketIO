@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Demo socket IO</title>
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/datepicker.css?v=1">
+  <script src="/js/jquery.min.js" type="text/javascript"></script>
+  <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="/js/datepicker_v2.js" type="text/javascript"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+      <h2 class="text-center"> Demo get real time data by SocketIO</h2>
+      <hr>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="txtDate">Date</label>
+          <input style="width: 300px;" type="text" class="form-control" id="txtDate" name="txtDate">
+        </div>
+        <button type="button" id="viewData" class="btn btn-primary">View Data</button>
+      </form>
+      <hr>
+      <table class="table table-bordered table-hover table-condensed">
+        <thead>
+        <tr>
+          <th>idBanner</th>
+          <th>displayclick</th>
+          <th>displayview</th>
+        </tr>
+        </thead>
+        <tbody id="dataSocketIO">
+            <!-- <tr v-for="(item, index) in reportdata">
+                <td>{{ item.bannerid }}</td>
+                <td>{{ item.displayclick }}</td>
+                <td>{{ item.displayview }}</td>
+            </tr> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
+<script type="text/javascript">
+function getRealTimeData(){
+    var time = $('#txtDate').val().trim();
+    if(time !== ''){
+        var arrTime = time.toString().split(' :: ');
+        var fromdate = arrTime[0];
+        var todate = arrTime[1];
+        fromdate = fromdate.split('/');
+        fromdate = fromdate[2] + '-' + fromdate[1] + '-' + fromdate[0];
+        fromdate = fromdate.replace(/\s+/g, '');
+        todate = todate.split('/');
+        todate = todate[2] + '-' + todate[1] + '-' + todate[0];
+        todate = todate.replace(/\s+/g, '');
+    }else{
+        var fromdate = null;
+        var todate   = null;
+    }
+
+    /*
+    var socket = io.connect('http://localhost:3000/');
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        reportdata : []
+      },
+      created: function() {
+        socket.on('sendToClient', function(data) {
+            this.reportdata = data;
+        }.bind(this));
+      }
+    });
+    */
+
+
+    var socket = io.connect('http://localhost:3000');
+    socket.on('sendToClient', function (data) {
+        console.log('have data response');
+        var html = '';
+        for (var i = 0; i < data.length; i++){
+            html += '<tr>';
+            html += '<td>'+ data[i].bannerid +'</td>';
+            html += '<td>'+ data[i].displayclick +'</td>';
+            html += '<td>'+ data[i].displayview +'</td>';
+            html += '</tr>';
+        }
+        $('#dataSocketIO').html(html);
+    });
+    socket.emit('reviceFromClient',{frdate : fromdate, tdate : todate});
+}
+
+function getCurrentDay(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd < 10) {
+        dd  = '0' + dd;
+    }
+
+    if(mm < 10) {
+        mm  = '0' + mm;
+    }
+    today = (mm + '/' + dd + '/' + yyyy).trim();
+    return today;
+}
+
+$(function(){
+
+    var currentDay = getCurrentDay();
+    var myTime = $('#txtDate').val().trim();
+    var fromdate;
+    var todate;
+
+    $('#txtDate').DatePicker({
+        format: 'm/d/Y',
+        date: [currentDay, currentDay],
+        current: currentDay,
+        calendars: 2,
+        mode: 'range',
+        starts: 1,
+        locate: 'week',
+
+        onChange: function (formated, dates) {
+          $('#txtDate').val(formated.join(' :: '));
+          $('#txtDate').DatePickerHide();
+        }
+    });
+    $('#viewData').click(function(){
+        getRealTimeData();
+    });
+    getRealTimeData();
+})
+
+</script>
+</body>
+</html>
+
