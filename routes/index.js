@@ -15,14 +15,10 @@ router.get('/', function(req, res, next) {
         let fromDate = (data.frdate !== null) ? data.frdate : today;
         let toDate   = (data.tdate !== null) ? data.tdate : today;
 
-        users.adnrpt_adx_banner_report_all(fromDate, toDate, function (resutl) {
+        users.getAllDataAdmins(fromDate, toDate, function (resutl) {
             io.sockets.emit("sendToClient", resutl);
         });
     });
-
-    // socket.on('disconnect', function() {
-    //     console.log('a user has left our page ');
-    // });
   });
   res.render('index');
 });

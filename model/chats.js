@@ -1,8 +1,7 @@
-const db = require('../config/database').mysql_pool;
+const db = require('../config/database');
 
 
 module.exports.getDataMessagerUser = function (callback) {
-  db.getConnection(function(err, connection) {
     db.query('call getDataMessagerUser()', function (err, result) {
       if (err) {
         return console.error(err.message);
@@ -11,12 +10,10 @@ module.exports.getDataMessagerUser = function (callback) {
         return callback(result[0]);
       return;
     });
-  });
 }
 
 
 module.exports.insertDataMessagerUser = function (username,message,timeChat,callback) {
-  db.getConnection(function(err, connection) {
     db.query('call insertDataMessagerUser(?,?,?)', [username,message,timeChat], function (err, result) {
       if (err) {
         return console.error(err.message);
@@ -25,5 +22,4 @@ module.exports.insertDataMessagerUser = function (username,message,timeChat,call
         return callback(true);
       return;
     });
-  });
 }

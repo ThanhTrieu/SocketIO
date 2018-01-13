@@ -28,9 +28,12 @@
       <table class="table table-bordered table-hover table-condensed">
         <thead>
         <tr>
-          <th>idBanner</th>
+          <!-- <th>idBanner</th>
           <th>displayclick</th>
-          <th>displayview</th>
+          <th>displayview</th> -->
+          <th>id</th>
+          <th>Username</th>
+          <th>Email</th>
         </tr>
         </thead>
         <tbody id="dataSocketIO">
@@ -85,9 +88,12 @@ function getRealTimeData(){
         var html = '';
         for (var i = 0; i < data.length; i++){
             html += '<tr>';
-            html += '<td>'+ data[i].bannerid +'</td>';
-            html += '<td>'+ data[i].displayclick +'</td>';
-            html += '<td>'+ data[i].displayview +'</td>';
+            // html += '<td>'+ data[i].bannerid +'</td>';
+            // html += '<td>'+ data[i].displayclick +'</td>';
+            // html += '<td>'+ data[i].displayview +'</td>';
+            html += '<td>'+ data[i].id +'</td>';
+            html += '<td>'+ data[i].username +'</td>';
+            html += '<td>'+ data[i].email +'</td>';
             html += '</tr>';
         }
         $('#dataSocketIO').html(html);

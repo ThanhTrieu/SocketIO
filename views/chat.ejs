@@ -24,6 +24,7 @@
             <input id="m" autocomplete="off" placeholder="messages..." /><button type="button">Send</button>
         </form>
     </div>
+    <script type="text/javascript" src="js/moment.min.js"></script>
     <script type="text/javascript">
         $(function(){
             var socket = io.connect('http://localhost:3000');
@@ -35,18 +36,19 @@
                     alert('Enter Data');
                 }else{
                     socket.emit('send messages' , {user : username, mess : messages});
+                    $('#m').val('');
                 }
             });
 
             socket.on('server respone',function(data){
-                $('#messages').append($('<li>').html("<strong>"+data.username+"</strong> : <span>"+data.messages+"</span>"));
+                $('#messages').append($('<li>').html("<time>"+moment(data.time).format('DD/MM/YYYY, h:m:s')+"</time> - <strong>"+data.username+"</strong> : <span>"+data.messages+"</span>"));
             });
 
             socket.emit('get all messages');
             socket.on('reveice all messages',function(data){
                 var html = '';
                 for (var i = 0; i < data.length; i++){
-                    html += "<li><strong>"+data[i].username+"</strong> : <span>"+data[i].message+"</span></li>";
+                    html += "<li><time>"+moment(data[i].time).format('DD/MM/YYYY, h:m:s')+"</time> - <strong>"+data[i].username+"</strong> : <span>"+data[i].message+"</span></li>";
                 }
                 $('#messages').html(html);
             });
