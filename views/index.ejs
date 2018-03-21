@@ -84,7 +84,7 @@ function getRealTimeData(){
 
     var socket = io.connect('http://localhost:3000');
     socket.on('sendToClient', function (data) {
-        console.log('have data response');
+        console.log('have data response form add user');
         var html = '';
         for (var i = 0; i < data.length; i++){
             html += '<tr>';

@@ -18,6 +18,8 @@
   </head>
   <body>
     <div id="wrapper">
+        <h4> user online : <span id="counter">0</span></h4>
+        <br/>
         <ul id="messages"></ul>
         <form>
             <input id="username" type="text" autocomplete="off" placeholder="Enter username....">
@@ -51,6 +53,10 @@
                     html += "<li><time>"+moment(data[i].time).format('DD/MM/YYYY, h:m:s')+"</time> - <strong>"+data[i].username+"</strong> : <span>"+data[i].message+"</span></li>";
                 }
                 $('#messages').html(html);
+            });
+
+            socket.on('counter', function (data) {
+                $("#counter").text(data.count);
             });
         })
     </script>
